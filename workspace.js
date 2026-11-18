@@ -1158,7 +1158,8 @@ export function createWorkspace({
       visible = highlights[role].map(getModule);
     else if (group !== "Todo")
       visible = options.filter((m) => m.group === group);
-    byId("tool-count").textContent = visible.length + " herramientas";
+    byId("tool-count").textContent =
+      visible.length === 1 ? "1 herramienta" : visible.length + " herramientas";
     for (const m of visible) {
       const b = action("", () => launch(m), "tool-card");
       const top = el("span", undefined, "tool-meta");

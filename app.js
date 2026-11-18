@@ -197,7 +197,8 @@ function renderCards() {
     card.append(meta, heading, el("p", item.summary), tail);
     grid.append(card);
   }
-  byId("results-info").textContent = matches.length + " recursos disponibles";
+  byId("results-info").textContent =
+    matches.length === 1 ? "1 recurso" : matches.length + " recursos";
   if (!matches.length) {
     const empty = el("div", undefined, "empty");
     empty.append(

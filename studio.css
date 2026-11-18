@@ -159,12 +159,30 @@ body {
 .chip:hover:not([aria-pressed="true"]) {
   background: #e6ecdf;
 }
-.tool-count {
-  margin: 0.55rem 0 0.6rem;
+.filters {
+  margin-bottom: 0.45rem;
+}
+.result-count {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.65rem 0 0.8rem;
   color: var(--muted);
-  font:
-    0.71rem/1.4 ui-monospace,
-    monospace;
+  font-size: 0.8rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.result-count:not(:empty)::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--line);
+}
+.search:focus-within {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.search:focus-within input {
+  outline: none;
 }
 .tool-grid {
   display: grid;
@@ -182,14 +200,9 @@ body {
   text-align: left;
   padding: 1.1rem 2rem 1.1rem 1.1rem;
   background: var(--paper);
-  transition:
-    transform 0.18s,
-    border-color 0.18s,
-    box-shadow 0.18s;
 }
 .tool-card:hover,
 .tool-card:focus-visible {
-  transform: translateY(-2px);
   border-color: #7b9a86;
   box-shadow: 0 8px 22px #193b2d10;
 }
@@ -492,13 +505,44 @@ a:focus-visible {
     font-size: 3.2rem;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .tool-card {
-    transition: none;
+/* Keep the title and dismissal control visible while long directories scroll. */
+@media screen {
+  #panel[open] {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
   }
-  .tool-card:hover {
-    transform: none;
+  #panel .dialog-head {
+    flex: none;
+    align-items: center;
+    padding: 1rem clamp(1.25rem, 4vw, 2rem);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
   }
+  #panel-body {
+    margin: 0;
+    padding: 1rem clamp(1.25rem, 4vw, 2rem) 1.5rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 1rem;
+  }
+  #panel .secondary[aria-pressed="true"] {
+    background: #e7f0df;
+    border-color: #668366;
+  }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  #panel[open] {
+    animation: panel-enter 160ms ease-out;
+  }
+  .chip, .filters button, .audiences button {
+    transition: background-color 140ms ease-out, border-color 140ms ease-out;
+  }
+}
+@keyframes panel-enter {
+  from { opacity: 0.82; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @media print {
   dialog .case-context,
