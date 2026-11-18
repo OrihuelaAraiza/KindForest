@@ -35,7 +35,7 @@ La prueba inicia su propio servidor en un puerto temporal y recorre el atlas en 
 Tras editar el sitio, ejecuta `python3 tools/prepare_offline.py` e incluye el índice actualizado en el commit. El navegador conserva los archivos públicos para volver a abrir el atlas sin conexión. Una vez probados y subidos los cambios a `main`, publica el contenido de `docs/` en la rama de Pages. Desde la raíz del repositorio:
 
 ```sh
-git fetch origin main gh-pages &&
+git fetch origin refs/heads/main:refs/remotes/origin/main refs/heads/gh-pages:refs/remotes/origin/gh-pages &&
 sitio=$(git rev-parse origin/main:docs) &&
 anterior=$(git rev-parse origin/gh-pages) &&
 version=$(git commit-tree "$sitio" -p "$anterior" -m "Actualiza el atlas de KindForest") &&
