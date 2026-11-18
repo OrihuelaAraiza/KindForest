@@ -167,7 +167,7 @@ export const profiles = {
     emphasis: "consulta.",
     heading: "Recursos profesionales",
     intro:
-      "Consulta guías, encuentra sociedades médicas y prepara una interconsulta con fuentes de referencia.",
+      "Organiza la agenda, recorre expedientes de práctica y consulta las fuentes que respaldan tu trabajo.",
     planner: "Prepara la interconsulta",
     description:
       "Arma una lista de puntos para revisar con el equipo que recibe el caso.",
@@ -184,7 +184,7 @@ export const profiles = {
     emphasis: "consulta.",
     heading: "Recursos para pacientes",
     intro:
-      "Encuentra información en español, conoce los ensayos clínicos y prepara tus preguntas para el equipo que te atiende.",
+      "Prepara tu cita, explora un diario de cuidado y encuentra orientación para ti y quienes te acompañan.",
     planner: "Prepara tu próxima cita",
     description: "Elige qué quieres preguntar y lleva tu lista a la consulta.",
     items: [

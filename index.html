@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; worker-src 'self'; manifest-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'"
     />
     <meta name="referrer" content="no-referrer" />
     <meta name="theme-color" content="#f8f8f2" />
@@ -14,8 +14,10 @@
       content="Atlas independiente de recursos de oncología para profesionales, pacientes y quienes les cuidan."
     />
     <title>KindForest · Atlas de oncología</title>
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="favicon.ico" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="studio.css" />
     <script type="module" src="app.js"></script>
   </head>
   <body>
@@ -26,7 +28,9 @@
           ><span class="mark" aria-hidden="true">✳</span> KindForest</a
         >
         <nav aria-label="Principal">
-          <a href="#biblioteca">Biblioteca</a
+          <a href="#espacio">Herramientas</a><a href="#biblioteca">Biblioteca</a
+          ><button type="button" id="quick-help" aria-label="Ayuda urgente">
+            Ayuda urgente</button
           ><button type="button" id="open-saved">
             Mi selección <span class="count" id="saved-count">0</span>
           </button>
@@ -48,16 +52,45 @@
             Consulta guías, encuentra sociedades médicas y prepara una
             interconsulta con fuentes de referencia.
           </p>
-          <a class="primary" href="#biblioteca"
-            >Explorar biblioteca <span aria-hidden="true">↓</span></a
+          <a class="primary" href="#espacio"
+            >Explorar herramientas <span aria-hidden="true">↗</span></a
           >
         </div>
         <figure>
-          <img src="media/tejido.webp" width="864" height="552" alt="" />
+          <img src="media/mitosis.webp" width="512" height="512" alt="" />
+          <button id="open-plate" aria-label="Ampliar micrografía">
+            <img src="icons/scan-line.svg" width="20" height="20" alt="" />
+          </button>
           <figcaption>
-            <span>FIG. 01</span> Tejido celular · Ilustración
+            <span>Microscopía</span> Células humanas en mitosis · D. Root
           </figcaption>
         </figure>
+      </section>
+      <section id="espacio" aria-labelledby="tools-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow"><span class="dot"></span> Espacio de trabajo</p>
+            <h2 id="tools-title">Mesa de consulta</h2>
+          </div>
+          <label class="search"
+            ><img src="icons/search.svg" width="18" height="18" alt="" /><span
+              class="sr"
+              >Buscar una herramienta</span
+            ><input
+              id="tool-query"
+              type="text"
+              maxlength="80"
+              placeholder="Buscar una herramienta"
+          /></label>
+        </div>
+        <div
+          id="tool-tabs"
+          class="tool-tabs"
+          role="group"
+          aria-label="Áreas de trabajo"
+        ></div>
+        <p id="tool-count" class="tool-count" role="status"></p>
+        <div id="tool-grid" class="tool-grid"></div>
       </section>
       <section id="biblioteca" aria-labelledby="library-title">
         <div class="section-head">
@@ -116,6 +149,7 @@
     <footer>
       <div class="frame foot">
         <span>KindForest · Atlas independiente de oncología</span
+        ><button id="display-options">Lectura y acceso</button
         ><button id="privacy">Privacidad y alcance</button>
       </div>
     </footer>
