@@ -2,7 +2,7 @@
 
 Una adaptación independiente de los recorridos públicos de ROMI Clinical Intelligence. El atlas reúne recursos de oncología para profesionales, pacientes y cuidadores. Los textos y la ilustración se prepararon para este proyecto.
 
-El sitio se publica desde la carpeta `docs/` de la rama `main` en GitHub Pages. [Abrir el atlas](https://orihuelaaraiza.github.io/KindForest/)
+El código del sitio está en `docs/` de `main`. GitHub Pages sirve esos mismos archivos desde la raíz de la rama `gh-pages`. [Abrir el atlas](https://orihuelaaraiza.github.io/KindForest/)
 
 Desde la raíz del repositorio, inicia el sitio con Python 3.
 
@@ -27,3 +27,17 @@ python3 tests/test_browser.py
 ```
 
 La prueba inicia su propio servidor en un puerto temporal y recorre el atlas en tres tamaños de pantalla. El directorio `docs/` contiene todos los archivos que serviría un alojamiento estático. `staticwebapp.config.json` define las cabeceras para Azure Static Web Apps; GitHub Pages y el servidor local no aplican esas cabeceras de Azure. La política de seguridad de contenido y la política de referente incluidas en el HTML se aplican también en Pages.
+
+## Publicar una actualización
+
+Una vez probados y subidos los cambios a `main`, publica el contenido de `docs/` en la rama de Pages. Desde la raíz del repositorio:
+
+```sh
+git fetch origin main gh-pages &&
+sitio=$(git rev-parse origin/main:docs) &&
+anterior=$(git rev-parse origin/gh-pages) &&
+version=$(git commit-tree "$sitio" -p "$anterior" -m "Actualiza el atlas de KindForest") &&
+git push origin "$version:refs/heads/gh-pages"
+```
+
+En GitHub Actions, comprueba que termine **pages build and deployment** y abre el atlas para verificar la versión publicada.
