@@ -3,12 +3,14 @@ import { createWorkspace } from "./workspace.js";
 import { catalog, profiles } from "./catalog.js";
 import { directories } from "./directories.js";
 import { createPalette } from "./palette.js";
+import { plates } from "./plates.js";
+import { createMotion } from "./motion.js";
 import {
   categoryIcons,
   categoryTones,
   glyph,
   groupTones,
-  iconImage,
+  iconMask,
 } from "./glyphs.js";
 
 const byId = (id) => document.getElementById(id);
@@ -20,9 +22,11 @@ const plans = { pro: new Set(), pac: new Set() };
 const motion = () =>
   !root.classList.contains("calm") &&
   matchMedia("(prefers-reduced-motion: no-preference)").matches;
+const animation = createMotion();
 let role;
 let category;
 let opener;
+let hero = null;
 
 function el(tag, text, className) {
   const node = document.createElement(tag);
@@ -61,7 +65,7 @@ function show(title, { eyebrow, icon, tone } = {}) {
   label.hidden = !eyebrow;
   label.textContent = eyebrow ?? "";
   badge.hidden = !icon;
-  badge.replaceChildren(...(icon ? [iconImage(icon, 22)] : []));
+  badge.replaceChildren(...(icon ? [iconMask(icon, 24)] : []));
   if (tone) panel.dataset.tone = tone;
   else delete panel.dataset.tone;
   body.replaceChildren();
@@ -240,7 +244,7 @@ function renderCards() {
     const meta = el("div", undefined, "meta");
     const icon = el("span", undefined, "icon");
     icon.setAttribute("aria-hidden", "true");
-    icon.append(iconImage(categoryIcons[item.category] ?? "book-open"));
+    icon.append(iconMask(categoryIcons[item.category] ?? "book-open", 22));
     const heading = el("h3");
     const open = action(item.title, () => detail(item), "card-link");
     open.id = "card-" + item.id;
@@ -254,7 +258,9 @@ function renderCards() {
       glyph("bookmark", 18, "i off"),
       glyph("bookmarkCheck", 18, "i on"),
     );
-    meta.append(icon, el("span", item.category, "eyebrow"), mark);
+    const code = el("span", "B-" + String(catalog.indexOf(item) + 1).padStart(2, "0"), "card-code");
+    code.setAttribute("aria-hidden", "true");
+    meta.append(icon, el("span", item.category, "eyebrow"), code, mark);
     const tail = el("div", undefined, "tail");
     const arrow = el("span", "↗");
     arrow.setAttribute("aria-hidden", "true");
@@ -346,10 +352,10 @@ function renderProfile() {
   for (const key of Object.keys(profiles))
     byId(key).setAttribute("aria-pressed", key === role);
   placeThumb();
-  byId("heading").replaceChildren(
-    profile.title + " ",
-    el("em", profile.emphasis),
+  animation.retitle(() =>
+    byId("heading").replaceChildren(profile.title + " ", el("em", profile.emphasis)),
   );
+  hero?.setRole(role);
   byId("intro-text").textContent = profile.intro;
   byId("library-title").textContent = profile.heading;
   byId("prep-title").textContent = profile.planner;
@@ -459,33 +465,7 @@ function privacy() {
   );
 }
 byId("privacy").addEventListener("click", privacy);
-byId("open-plate").addEventListener("click", () => {
-  show("Células humanas en mitosis", { eyebrow: "Microscopía", icon: "microscope", tone: "green" });
-  const photo = el("img", undefined, "full-plate");
-  photo.src = "media/mitosis.webp";
-  photo.alt =
-    "Campo microscópico con células brillantes en distintas fases de división sobre fondo oscuro.";
-  photo.width = 512;
-  photo.height = 512;
-  const link = el(
-    "a",
-    "Consultar la procedencia de la imagen ↗",
-    "source-link",
-  );
-  link.href =
-    "https://scikit-image.org/docs/stable/api/skimage.data.html#skimage.data.human_mitosis";
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  body.append(
-    photo,
-    el(
-      "p",
-      "Micrografía de David Root, distribuida bajo CC0. La portada muestra un recorte con tratamiento de color; aquí puedes ver el campo completo.",
-      "note",
-    ),
-    link,
-  );
-});
+byId("open-plate").addEventListener("click", () => openFigure(plates[0]));
 
 /* Theme: follows the system until the visitor chooses; nothing is stored. */
 const systemDark = matchMedia("(prefers-color-scheme: dark)");
@@ -496,7 +476,7 @@ function applyTheme() {
   const toggle = byId("theme-toggle");
   toggle.setAttribute("aria-pressed", dark);
   for (const meta of document.querySelectorAll('meta[name="theme-color"]'))
-    meta.content = dark ? "#0a1917" : "#f6f7f2";
+    meta.content = dark ? "#07080a" : "#f1ebdf";
 }
 const theme = {
   get: () => root.dataset.theme,
@@ -678,7 +658,138 @@ byId("close").addEventListener("click", () => panel.close());
 panel.addEventListener("close", () => {
   if (opener?.isConnected) opener.focus();
 });
+
+/* Gallery: "Bajo el microscopio" ----------------------------------------- */
+function openFigure(plate) {
+  const index = plates.indexOf(plate);
+  show(plate.title, { eyebrow: "Fig. " + (index + 1) + " · " + plate.era, icon: "microscope", tone: "violet" });
+  const photo = el("img", undefined, "full-plate");
+  photo.src = plate.src;
+  photo.alt = plate.title + ". " + plate.caption;
+  photo.width = plate.width;
+  photo.height = plate.height;
+  const link = el("a", "Ver la ficha en la fuente ↗", "source-link");
+  link.href = plate.url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  const nav = el("div", undefined, "row-actions figure-steps");
+  const step = (delta) => () =>
+    openFigure(plates[(index + delta + plates.length) % plates.length]);
+  nav.append(
+    action("← Figura anterior", step(-1), "small-button"),
+    action("Figura siguiente →", step(1), "small-button"),
+  );
+  body.append(
+    photo,
+    el("p", plate.caption, "lead"),
+    el("p", "Autoría: " + plate.credit + " · Licencia: " + plate.license, "note"),
+    link,
+    nav,
+  );
+}
+function renderGallery() {
+  const list = byId("gallery");
+  plates.forEach((plate, i) => {
+    const item = el("div", undefined, "figure");
+    item.setAttribute("role", "listitem");
+    item.dataset.era = plate.era === "Hoy" ? "modern" : "archive";
+    const open = action("", () => openFigure(plate), "figure-open");
+    open.setAttribute("aria-label", "Ver figura " + (i + 1) + ": " + plate.title);
+    const media = el("span", undefined, "figure-media");
+    const img = el("img");
+    img.src = plate.src;
+    img.alt = "";
+    img.width = plate.width;
+    img.height = plate.height;
+    img.loading = "lazy";
+    img.decoding = "async";
+    media.append(img);
+    const label = el("span", undefined, "figure-label");
+    label.append(
+      el("span", "Fig. " + String(i + 1).padStart(2, "0"), "figure-no"),
+      el("span", plate.era, "figure-era"),
+    );
+    const text = el("span", undefined, "figure-text");
+    text.append(el("strong", plate.title), el("small", plate.credit + " · " + plate.license));
+    open.append(media, label, text);
+    item.append(open);
+    list.append(item);
+  });
+  const status = byId("gallery-status");
+  const paint = () => {
+    const max = list.scrollWidth - list.clientWidth;
+    const at = max > 0 ? list.scrollLeft / max : 0;
+    status.textContent =
+      String(Math.round(at * (plates.length - 1)) + 1).padStart(2, "0") +
+      " / " +
+      String(plates.length).padStart(2, "0");
+    byId("gallery-prev").disabled = list.scrollLeft < 4;
+    byId("gallery-next").disabled = list.scrollLeft > max - 4;
+  };
+  const page = (direction) => () =>
+    list.scrollBy({ left: direction * list.clientWidth * 0.8, behavior: motion() ? "smooth" : "auto" });
+  byId("gallery-prev").addEventListener("click", page(-1));
+  byId("gallery-next").addEventListener("click", page(1));
+  list.addEventListener("scroll", () => requestAnimationFrame(paint), { passive: true });
+  addEventListener("resize", paint);
+  paint();
+}
+renderGallery();
+
+/* Sources band: every institution named in the atlas. */
+{
+  const names = [
+    ...new Set([
+      ...catalog.map((r) => r.source),
+      ...Object.values(directories).flatMap((list) => list.map((e) => e.source)),
+    ]),
+  ].filter((n) => n.length < 28);
+  const track = byId("marquee");
+  for (let copy = 0; copy < 2; copy++) {
+    const run = el("div", undefined, "marquee-run");
+    for (const name of names) run.append(el("span", name), el("i", "✳"));
+    track.append(run);
+  }
+}
+
 renderProfile();
+
+/* Hero tissue: WebGL when available, the real micrograph otherwise. */
+{
+  const section = byId("hero"),
+    label = byId("hero-source"),
+    readout = byId("hud-xy");
+  let pending = false,
+    xy = [0.5, 0.5];
+  const onMove = (x, y) => {
+    xy = [x, y];
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      readout.textContent = "X " + xy[0].toFixed(3) + " · Y " + xy[1].toFixed(3);
+    });
+  };
+  const fallback = () => {
+    section.classList.add("no-gl");
+    label.textContent = "Micrografía: Lorna McInroy · Wellcome Collection · CC BY 4.0";
+  };
+  if (window.WebGLRenderingContext)
+    import("./hero-gl.js")
+      .then(({ startHero }) => {
+        hero = startHero(byId("hero-canvas"), { role, still: !motion(), onMove });
+        section.classList.add("gl-on");
+      })
+      .catch(fallback);
+  else fallback();
+}
+animation.start();
+// "Reducir movimiento" toggles html.calm: stop GSAP and freeze the tissue.
+new MutationObserver(() => {
+  const calm = !motion();
+  animation.setCalm(calm);
+  hero?.setStill(calm);
+}).observe(root, { attributes: true, attributeFilter: ["class"] });
 
 /* Page effects ----------------------------------------------------------- */
 const header = byId("site-header"),
@@ -698,38 +809,12 @@ addEventListener(
   },
   { passive: true },
 );
-addEventListener("resize", placeThumb);
-document.fonts?.ready.then(placeThumb);
-onScroll();
-
-// The micrograph leans gently toward the pointer.
-const scope = document.querySelector(".scope");
-scope.addEventListener("pointermove", (event) => {
-  if (event.pointerType !== "mouse" || !motion()) return;
-  const box = scope.getBoundingClientRect();
-  scope.style.setProperty("--px", ((event.clientX - box.left) / box.width - 0.5).toFixed(3));
-  scope.style.setProperty("--py", ((event.clientY - box.top) / box.height - 0.5).toFixed(3));
-});
-scope.addEventListener("pointerleave", () => {
-  scope.style.setProperty("--px", 0);
-  scope.style.setProperty("--py", 0);
-});
-
-// Sections fade in once; without IntersectionObserver everything stays visible.
-if ("IntersectionObserver" in window) {
-  const seen = new IntersectionObserver(
-    (records) => {
-      for (const record of records)
-        if (record.isIntersecting) {
-          record.target.classList.add("is-visible");
-          seen.unobserve(record.target);
-        }
-    },
-    { rootMargin: "0px 0px -8% 0px" },
-  );
-  for (const node of document.querySelectorAll("[data-reveal]")) seen.observe(node);
-  root.classList.add("reveal-ready");
+// Web fonts change button widths after first paint: re-place the thumb on any resize.
+{
+  const sizes = new ResizeObserver(placeThumb);
+  for (const key of Object.keys(profiles)) sizes.observe(byId(key));
 }
+onScroll();
 
 /* Live proofs for the commitments section. */
 function storedItems() {

@@ -17,6 +17,19 @@ Se volvió a cargar la portada y se recorrieron el selector de público, la bien
 
 Se probaron los recorridos de los dos públicos, apertura y contenido de todas las herramientas, búsqueda, selección, seguimiento entre módulos, cálculos monetarios, exportación y reapertura sin conexión. En siete vistas de Chromium a 390 px no se detectaron infracciones con las reglas automáticas WCAG A/AA 2.0 y 2.1 de axe-core. Esto no constituye una certificación de accesibilidad o de seguridad clínica.
 
+## Cuarta entrega: identidad visual
+
+La interfaz anterior era correcta pero genérica. Esta entrega le da una identidad propia, «Atlas vivo», con recursos de terceros servidos desde el mismo dominio. Se mantienen la CSP, el uso sin conexión y la ausencia de solicitudes externas.
+
+| Cambio | Verificación |
+| --- | --- |
+| Hero con tejido celular generativo en WebGL (OGL), lupa con el cursor y colores por público | El hero declara si muestra la simulación o la micrografía real de respaldo. Se pausa fuera de pantalla y queda fijo con movimiento reducido. |
+| Galería «Bajo el microscopio» con ocho figuras de Wellcome Collection y scikit-image | Prueba de navegador: carga de las ocho imágenes, ficha con autoría, licencia y enlace, navegación entre figuras y botones de desplazamiento. |
+| Marca propia, Fraunces / Instrument Sans / Martian Mono, iconos Phosphor duotono tintados por área | La prueba de herramientas comprueba que cada icono usado existe y es SVG. Fraunces se instanció con `fontTools` y pasó de 271 KB a 134 KB. |
+| Movimiento con GSAP (ScrollTrigger, SplitText) | Solo opacidad y desplazamiento vertical: el contenido sigue siendo enfocable durante la entrada. Todo se revierte con `prefers-reduced-motion` o con **Reducir movimiento**. |
+
+axe-core 4.10.3 no notificó infracciones WCAG A/AA 2.0 y 2.1 en ambos públicos, la paleta, una herramienta, una figura y la selección, en tema claro y oscuro, a 390 y 1280 px. La auditoría detectó que el indicador del selector de público se colocaba antes de cargar la tipografía y tapaba parte del otro botón. Ahora se recoloca al cambiar el tamaño de los botones. El contraste del texto sobre el lienzo WebGL no se puede medir de forma automática; se garantiza con un velo oscuro bajo el texto y colores con un contraste de al menos 7:1 sobre negro.
+
 ## Tercera entrega: interfaz
 
 Se rehízo la capa visual sin cambiar el alcance de los datos ni las garantías de privacidad. Las dos hojas de estilo se unificaron en `styles.css`, con variables de color para tema claro y oscuro y un tono por área de trabajo, compartido por pestañas, tarjetas y ventanas. Los titulares usan Instrument Serif servida desde el mismo dominio. La portada incluye una búsqueda destacada, cifras calculadas a partir de los datos y un visor de la micrografía con retícula y barrido animados. La mesa de herramientas destaca seis herramientas en una cuadrícula con dos tarjetas anchas.

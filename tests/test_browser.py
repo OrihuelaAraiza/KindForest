@@ -1,5 +1,6 @@
 """Exercise the public atlas against an ephemeral local HTTP server."""
 
+import re
 import shutil
 import threading
 import unittest
@@ -229,6 +230,42 @@ class AtlasTests(unittest.TestCase):
         self.assertEqual(page.evaluate("localStorage.length + sessionStorage.length"), 0)
         self.assertTrue(page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
 
+    def test_gallery_and_hero(self):
+        page = self.browser.new_page(viewport={"width": 1280, "height": 900})
+        self.addCleanup(page.close)
+        errors = []
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.goto(self.root)
+        # The hero says whether it shows a simulation or a real micrograph.
+        expect(page.locator("#hero")).to_have_class(re.compile(r"\b(gl-on|no-gl)\b"))
+        expect(page.locator("#hero-source")).to_contain_text(re.compile("Simulación generativa|Micrografía"))
+        figures = page.locator("#gallery .figure")
+        expect(figures).to_have_count(8)
+        # The page's CSP forbids eval, so poll from Python instead of wait_for_function.
+        for img in page.locator("#gallery img").all():
+            img.scroll_into_view_if_needed()
+            expect(img).to_have_js_property("complete", True)
+            self.assertGreater(img.evaluate("i => i.naturalWidth"), 0)
+        # Each figure opens a record with credit, license and source link.
+        page.get_by_role("button", name="Ver figura 6: Patología celular, de Rudolf Virchow").click()
+        dialog = page.get_by_role("dialog")
+        expect(dialog.get_by_text("Licencia: Dominio público", exact=False)).to_be_visible()
+        expect(dialog.get_by_role("link", name="Ver la ficha en la fuente ↗")).to_have_attribute("href", "https://wellcomecollection.org/works/qxb7wksn")
+        dialog.get_by_role("button", name="Figura siguiente →").click()
+        expect(page.locator("#panel-title")).to_have_text("Organismos unicelulares y pluricelulares")
+        page.keyboard.press("Escape")
+        # Paging buttons follow the scroll position of the strip.
+        page.evaluate("document.getElementById('gallery').scrollLeft = 0")
+        expect(page.get_by_role("button", name="Figuras anteriores")).to_be_disabled()
+        page.get_by_role("button", name="Figuras siguientes").click()
+        expect(page.get_by_role("button", name="Figuras anteriores")).to_be_enabled()
+        self.assertGreater(page.evaluate("document.getElementById('gallery').scrollLeft"), 0)
+        # The hero button opens the real micrograph used as fallback.
+        page.get_by_role("button", name="Ver micrografía real").click()
+        expect(page.locator("#panel-title")).to_have_text("Células de cáncer de colon")
+        expect(dialog.get_by_text("Licencia: CC BY 4.0", exact=False)).to_be_visible()
+        self.assertEqual(errors, [])
+
     def test_every_tool_and_offline_revisit(self):
         context = self.browser.new_context(viewport={"width":320,"height":800})
         self.addCleanup(context.close)
@@ -241,7 +278,10 @@ class AtlasTests(unittest.TestCase):
             page.get_by_role("button",name="Todo",exact=True).click()
             tools = page.locator(".tool-card")
             self.assertGreater(tools.count(), 20)
-            page.wait_for_function("Array.from(document.querySelectorAll('.tool-card img')).every(i => i.complete && i.naturalWidth > 0)")
+            # Tool icons are SVG files painted through a CSS mask: each one must exist.
+            for name in set(page.eval_on_selector_all(".tool-card .ico", "els => els.map(e => e.dataset.icon)")):
+                response = page.request.get(f"{self.root}/icons/{name}.svg")
+                self.assertTrue(response.ok and "<svg" in response.text(), name)
             for item in tools.all():
                 item.click()
                 expect(page.locator("#panel")).to_be_visible()
