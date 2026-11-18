@@ -17,6 +17,20 @@ Se volvió a cargar la portada y se recorrieron el selector de público, la bien
 
 Se probaron los recorridos de los dos públicos, apertura y contenido de todas las herramientas, búsqueda, selección, seguimiento entre módulos, cálculos monetarios, exportación y reapertura sin conexión. En siete vistas de Chromium a 390 px no se detectaron infracciones con las reglas automáticas WCAG A/AA 2.0 y 2.1 de axe-core. Esto no constituye una certificación de accesibilidad o de seguridad clínica.
 
+## Tercera entrega: interfaz
+
+Se rehízo la capa visual sin cambiar el alcance de los datos ni las garantías de privacidad. Las dos hojas de estilo se unificaron en `styles.css`, con variables de color para tema claro y oscuro y un tono por área de trabajo, compartido por pestañas, tarjetas y ventanas. Los titulares usan Instrument Serif servida desde el mismo dominio. La portada incluye una búsqueda destacada, cifras calculadas a partir de los datos y un visor de la micrografía con retícula y barrido animados. La mesa de herramientas destaca seis herramientas en una cuadrícula con dos tarjetas anchas.
+
+| Cambio | Verificación |
+| --- | --- |
+| Paleta de búsqueda (`Ctrl K`, `⌘ K`, `/`) sobre herramientas, biblioteca, directorios y acciones | Prueba de navegador: atajos, ranking literal, flechas con vuelta, apertura filtrada del directorio, cambio de público y estado sin resultados. |
+| Tema según el sistema, aplicado antes del primer pintado, con cambio manual por sesión | Prueba con esquema oscuro emulado y cambio a claro desde **Lectura y acceso**. Almacenamiento local y de sesión en 0. |
+| Marcador en cada tarjeta de la biblioteca, contador y aviso visual | Prueba de alta y baja desde la tarjeta y desde la ficha, con estado sincronizado. |
+| Movimiento: entrada escalonada, revelado al desplazarse, retícula y barrido | Se desactiva con `prefers-reduced-motion` o con **Reducir movimiento**. Sin animación, el contenido es visible desde el inicio. |
+| Ventanas como hojas inferiores en móvil | Sin desbordamiento horizontal a 320 px en las 77 aperturas de herramientas de la prueba existente. |
+
+axe-core 4.10.3 en Chromium no notificó infracciones de las reglas automáticas WCAG A/AA 2.0 y 2.1. Se revisaron ambos públicos, la paleta, una herramienta y la selección, en tema claro y oscuro, a 390 y 1280 px (`tests/test_accessibility.py`). La auditoría señaló un destello de tema claro al cargar con sistema oscuro y transiciones que ignoraban la preferencia de movimiento reducido; ambos se corrigieron. Quedan pendientes las pruebas en Safari y Firefox y una revisión manual con lector de pantalla.
+
 ## Primera entrega (registro histórico)
 
 ## Qué ofrece el sitio

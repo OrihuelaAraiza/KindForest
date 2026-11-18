@@ -3,7 +3,8 @@
 | Recurso | Uso | Procedencia y condiciones |
 | --- | --- | --- |
 | Manrope variable 5.2.8 (paquete Fontsource) | Tipografía de interfaz. Archivo latino servido por el mismo dominio. | [Fontsource](https://fontsource.org/fonts/manrope) · [SIL Open Font License](docs/vendor/MANROPE-LICENSE.txt) |
-| Lucide Static 0.468.0 | Iconos de navegación y herramientas. | [Lucide](https://lucide.dev/license) · [Licencias del paquete](docs/vendor/LUCIDE-LICENSE.txt) |
+| Instrument Serif 400 normal y cursiva (paquete Fontsource 5.3.0) | Titulares y cifras. Archivos latinos servidos por el mismo dominio. | [Fontsource](https://fontsource.org/fonts/instrument-serif) · [SIL Open Font License](docs/vendor/INSTRUMENT-SERIF-LICENSE.txt) |
+| Lucide Static 0.468.0 | Iconos de herramientas como archivos SVG. Los iconos de la interfaz (búsqueda, tema, marcadores, compromisos) reproducen sus trazos en línea en `index.html` y `glyphs.js` para heredar el color del tema. | [Lucide](https://lucide.dev/license) · [Licencias del paquete](docs/vendor/LUCIDE-LICENSE.txt) |
 | Fuse.js 7.1.0, distribución básica ESM | Búsqueda aproximada local de herramientas, instituciones y congresos. | [Fuse.js](https://www.fusejs.io/) · [Licencia del paquete](docs/vendor/FUSE-LICENSE.txt) |
 | Chart.js 4.4.9 | Gráfico de actividad de la sesión, cargado al abrir indicadores. | [Chart.js](https://www.chartjs.org/) · [Licencia MIT](docs/vendor/CHART-LICENSE.txt) · [Dependencia de color](docs/vendor/KURKLE-LICENSE.txt) |
 | David Root, células humanas en mitosis | Micrografía distribuida por scikit-image. Conversión a WebP. En portada, recorte y contraste mediante CSS. | [Ficha, atribución y CC0](https://scikit-image.org/docs/stable/api/skimage.data.html#skimage.data.human_mitosis) |

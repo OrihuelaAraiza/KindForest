@@ -10,11 +10,13 @@ export function referenceBrowser({
   external,
   body,
   favorites,
+  initialQuery = "",
 }) {
   const entries = directories[id];
   const search = el("input");
   search.type = "search";
   search.placeholder = "Nombre o tema";
+  search.value = initialQuery;
   const regions = [
     ...new Set(entries.flatMap((e) => e.region.split(" · "))),
   ].sort((a, b) => a.localeCompare(b, "es"));

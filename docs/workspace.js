@@ -2,6 +2,7 @@ import { advancedTools, downloadText } from "./advanced-tools.js";
 import { referenceBrowser } from "./reference-browser.js";
 import Fuse from "./vendor/fuse.mjs";
 import { modules, questions } from "./modules.js";
+import { groupTones } from "./glyphs.js";
 
 const cases = [
   {
@@ -206,7 +207,7 @@ export function createWorkspace({
     appointments,
     entries,
   });
-  function launch(m) {
+  function launch(m, options = {}) {
     stopTimer();
     if (m.id === "consulta") {
       plan();
@@ -216,7 +217,7 @@ export function createWorkspace({
       detail("trials");
       return;
     }
-    show(m.name);
+    show(m.name, { eyebrow: m.group, icon: m.icon, tone: groupTones[m.group] });
     const refresh = () => launch(m);
     if (
       [
@@ -241,6 +242,7 @@ export function createWorkspace({
         external,
         body,
         favorites,
+        initialQuery: options.query,
       });
       if (m.id === "congresos") {
         section("Preparación del congreso");
@@ -985,6 +987,10 @@ export function createWorkspace({
       const { Chart } = await import("./vendor/chart.mjs");
       if (!holder.isConnected || !panel.open) return;
       usageChart?.destroy();
+      const css = getComputedStyle(document.documentElement);
+      Chart.defaults.color = css.getPropertyValue("--ink-2").trim();
+      Chart.defaults.borderColor = css.getPropertyValue("--line").trim();
+      Chart.defaults.font.family = "Manrope, system-ui, sans-serif";
       usageChart = new Chart(canvas, {
         type: "bar",
         data: {
@@ -1000,13 +1006,13 @@ export function createWorkspace({
               label: "Cantidad",
               data: counts.map(([, n]) => n),
               backgroundColor: [
-                "#206957",
-                "#7d9072",
-                "#b67540",
-                "#548798",
-                "#666c94",
+                "#2c8a68",
+                "#86a874",
+                "#c27a3a",
+                "#3f84b4",
+                "#7563c4",
               ],
-              borderRadius: 5,
+              borderRadius: 6,
             },
           ],
         },
@@ -1152,16 +1158,29 @@ export function createWorkspace({
         keys: ["name", "summary", "group", "id"],
         threshold: 0.38,
         ignoreLocation: true,
+        ignoreDiacritics: true,
       });
       visible = index.search(search).map((r) => r.item);
     } else if (group === "Destacados")
       visible = highlights[role].map(getModule);
     else if (group !== "Todo")
       visible = options.filter((m) => m.group === group);
+    // The six highlights use a bento layout framed by two wide cards.
+    const featured = !search && group === "Destacados" && visible.length === 6;
+    grid.classList.toggle("featured", featured);
     byId("tool-count").textContent =
       visible.length === 1 ? "1 herramienta" : visible.length + " herramientas";
-    for (const m of visible) {
+    visible.forEach((m, i) => {
       const b = action("", () => launch(m), "tool-card");
+      b.dataset.tone = groupTones[m.group];
+      b.style.setProperty("--i", i);
+      if (featured && (i === 0 || i === 5)) {
+        b.classList.add("wide");
+        b.style.setProperty(
+          "--glyph",
+          'url("' + new URL("icons/" + m.icon + ".svg", document.baseURI) + '")',
+        );
+      }
       const top = el("span", undefined, "tool-meta");
       const glyph = el("span", undefined, "tool-icon");
       glyph.append(icon(m.icon));
@@ -1172,22 +1191,32 @@ export function createWorkspace({
       arr.setAttribute("aria-hidden", "true");
       b.append(top, title, desc, arr);
       grid.append(b);
-    }
+    });
     if (!visible.length)
       grid.append(
         el(
           "p",
           "No encontramos esa herramienta. Prueba «guías», «citas» o «apoyo».",
+          "tool-empty",
         ),
       );
   }
+  // A soft light follows the pointer across the card under it.
+  byId("tool-grid").addEventListener("pointermove", (event) => {
+    const card = event.target.closest?.(".tool-card");
+    if (!card || event.pointerType !== "mouse") return;
+    const box = card.getBoundingClientRect();
+    card.style.setProperty("--mx", event.clientX - box.left + "px");
+    card.style.setProperty("--my", event.clientY - box.top + "px");
+  });
   function tabs() {
     const holder = byId("tool-tabs");
     holder.replaceChildren();
+    const options = allowed();
     for (const name of [
       "Destacados",
       "Todo",
-      ...new Set(allowed().map((m) => m.group)),
+      ...new Set(options.map((m) => m.group)),
     ]) {
       const b = action(
         name,
@@ -1202,6 +1231,16 @@ export function createWorkspace({
         "chip",
       );
       b.setAttribute("aria-pressed", group === name && !query);
+      if (groupTones[name]) b.dataset.tone = groupTones[name];
+      const total =
+        name === "Destacados"
+          ? highlights[role].length
+          : name === "Todo"
+            ? options.length
+            : options.filter((m) => m.group === name).length;
+      const n = el("span", String(total), "n");
+      n.setAttribute("aria-hidden", "true");
+      b.append(n);
       holder.append(b);
     }
   }
@@ -1212,6 +1251,12 @@ export function createWorkspace({
   });
   byId("quick-help").onclick = () => go("urgencias");
   return {
+    open(id, options) {
+      const m = getModule(id);
+      if (m && allowed().includes(m)) launch(m, options);
+    },
+    tools: () => allowed(),
+    highlights: () => highlights[role].map(getModule),
     setRole(value) {
       role = value;
       group = "Destacados";
