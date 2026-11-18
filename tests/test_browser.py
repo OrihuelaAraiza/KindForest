@@ -1,5 +1,6 @@
 """Exercise the public atlas against an ephemeral local HTTP server."""
 
+import re
 import shutil
 import threading
 import unittest
@@ -150,6 +151,121 @@ class AtlasTests(unittest.TestCase):
         dialog.get_by_text("Agregar concepto").click()
         expect(dialog.get_by_text("Total estimado",exact=False)).to_contain_text("360.75")
 
+    def test_command_palette(self):
+        page = self.browser.new_page(viewport={"width": 1280, "height": 900})
+        self.addCleanup(page.close)
+        errors = []
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.goto(self.root)
+        palette = page.locator("#palette")
+        page.keyboard.press("Control+k")
+        expect(palette).to_be_visible()
+        expect(page.get_by_role("combobox")).to_be_focused()
+        # Literal matches rank above fuzzy look-alikes.
+        page.keyboard.type("citas")
+        expect(page.get_by_role("option").first).to_contain_text("Agenda y recepción")
+        expect(page.get_by_role("combobox")).to_have_attribute("aria-activedescendant", "pal-0")
+        page.keyboard.press("Enter")
+        expect(palette).to_be_hidden()
+        expect(page.locator("#panel-title")).to_have_text("Agenda y recepción")
+        page.keyboard.press("Escape")
+        # Directory entries open their reference list already filtered.
+        page.keyboard.press("/")
+        page.keyboard.type("ESMO 2027")
+        page.keyboard.press("Enter")
+        expect(page.locator("#panel-title")).to_have_text("Mis congresos")
+        expect(page.get_by_label("Filtrar por nombre")).to_have_value("ESMO 2027")
+        expect(page.locator(".reference-entry h3").first).to_have_text("ESMO 2027")
+        page.keyboard.press("Escape")
+        # Arrow keys move the active option and wrap around.
+        page.get_by_role("button", name="Buscar", exact=True).click()
+        options = page.get_by_role("option")
+        expect(options.first).to_have_attribute("aria-selected", "true")
+        page.keyboard.press("ArrowUp")
+        expect(options.last).to_have_attribute("aria-selected", "true")
+        page.keyboard.press("ArrowDown")
+        expect(options.first).to_contain_text("Cambiar a la vista de pacientes")
+        page.keyboard.press("Enter")
+        expect(page.locator("h1")).to_contain_text("Tu próxima")
+        self.assertIn("vista=pacientes", page.url)
+        # Unknown terms explain how to continue instead of showing nothing.
+        page.keyboard.press("Control+k")
+        page.keyboard.type("zzqxw")
+        expect(palette.get_by_text("Sin coincidencias", exact=False)).to_be_visible()
+        page.keyboard.press("Escape")
+        expect(palette).to_be_hidden()
+        self.assertEqual(errors, [])
+
+    def test_theme_bookmarks_and_live_figures(self):
+        context = self.browser.new_context(viewport={"width": 390, "height": 844}, color_scheme="dark")
+        self.addCleanup(context.close)
+        page = context.new_page()
+        page.goto(self.root)
+        html = page.locator("html")
+        # The system preference applies first; the visitor can override it for the session.
+        expect(html).to_have_attribute("data-theme", "dark")
+        page.get_by_role("button", name="Lectura y acceso").click()
+        page.get_by_role("button", name="Claro", exact=True).click()
+        expect(html).to_have_attribute("data-theme", "light")
+        expect(page.get_by_role("button", name="Claro", exact=True)).to_have_attribute("aria-pressed", "true")
+        page.keyboard.press("Escape")
+        # Hero figures come from the data, per audience.
+        expect(page.locator('[data-stat="tools"]')).to_have_text("48")
+        expect(page.locator('[data-stat="congresses"]')).to_have_text("14")
+        # Saving from a card updates the counter, the card and the open record.
+        card = page.locator(".card").filter(has_text="Hematología clínica")
+        mark = card.get_by_role("button", name="Guardar")
+        mark.click()
+        expect(mark).to_have_attribute("aria-pressed", "true")
+        expect(card).to_have_class("card is-saved")
+        expect(page.locator("#saved-count")).to_have_text("1")
+        expect(page.locator("#announce")).to_have_text("Recurso añadido a mi selección.")
+        card.get_by_role("button", name="Hematología clínica").click()
+        page.get_by_text("Quitar de mi selección").click()
+        page.keyboard.press("Escape")
+        expect(mark).to_have_attribute("aria-pressed", "false")
+        expect(page.locator("#saved-count")).to_have_text("0")
+        page.locator("#pac").click()
+        expect(page.locator('[data-stat="tools"]')).to_have_text("29")
+        self.assertEqual(page.evaluate("localStorage.length + sessionStorage.length"), 0)
+        self.assertTrue(page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+
+    def test_gallery_and_hero(self):
+        page = self.browser.new_page(viewport={"width": 1280, "height": 900})
+        self.addCleanup(page.close)
+        errors = []
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.goto(self.root)
+        # The hero says whether it shows a simulation or a real micrograph.
+        expect(page.locator("#hero")).to_have_class(re.compile(r"\b(gl-on|no-gl)\b"))
+        expect(page.locator("#hero-source")).to_contain_text(re.compile("Simulación generativa|Micrografía"))
+        figures = page.locator("#gallery .figure")
+        expect(figures).to_have_count(8)
+        # The page's CSP forbids eval, so poll from Python instead of wait_for_function.
+        for img in page.locator("#gallery img").all():
+            img.scroll_into_view_if_needed()
+            expect(img).to_have_js_property("complete", True)
+            self.assertGreater(img.evaluate("i => i.naturalWidth"), 0)
+        # Each figure opens a record with credit, license and source link.
+        page.get_by_role("button", name="Ver figura 6: Patología celular, de Rudolf Virchow").click()
+        dialog = page.get_by_role("dialog")
+        expect(dialog.get_by_text("Licencia: Dominio público", exact=False)).to_be_visible()
+        expect(dialog.get_by_role("link", name="Ver la ficha en la fuente ↗")).to_have_attribute("href", "https://wellcomecollection.org/works/qxb7wksn")
+        dialog.get_by_role("button", name="Figura siguiente →").click()
+        expect(page.locator("#panel-title")).to_have_text("Organismos unicelulares y pluricelulares")
+        page.keyboard.press("Escape")
+        # Paging buttons follow the scroll position of the strip.
+        page.evaluate("document.getElementById('gallery').scrollLeft = 0")
+        expect(page.get_by_role("button", name="Figuras anteriores")).to_be_disabled()
+        page.get_by_role("button", name="Figuras siguientes").click()
+        expect(page.get_by_role("button", name="Figuras anteriores")).to_be_enabled()
+        self.assertGreater(page.evaluate("document.getElementById('gallery').scrollLeft"), 0)
+        # The hero button opens the real micrograph used as fallback.
+        page.get_by_role("button", name="Ver micrografía real").click()
+        expect(page.locator("#panel-title")).to_have_text("Células de cáncer de colon")
+        expect(dialog.get_by_text("Licencia: CC BY 4.0", exact=False)).to_be_visible()
+        self.assertEqual(errors, [])
+
     def test_every_tool_and_offline_revisit(self):
         context = self.browser.new_context(viewport={"width":320,"height":800})
         self.addCleanup(context.close)
@@ -162,7 +278,10 @@ class AtlasTests(unittest.TestCase):
             page.get_by_role("button",name="Todo",exact=True).click()
             tools = page.locator(".tool-card")
             self.assertGreater(tools.count(), 20)
-            page.wait_for_function("Array.from(document.querySelectorAll('.tool-card img')).every(i => i.complete && i.naturalWidth > 0)")
+            # Tool icons are SVG files painted through a CSS mask: each one must exist.
+            for name in set(page.eval_on_selector_all(".tool-card .ico", "els => els.map(e => e.dataset.icon)")):
+                response = page.request.get(f"{self.root}/icons/{name}.svg")
+                self.assertTrue(response.ok and "<svg" in response.text(), name)
             for item in tools.all():
                 item.click()
                 expect(page.locator("#panel")).to_be_visible()

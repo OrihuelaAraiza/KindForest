@@ -8,157 +8,278 @@
       content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; worker-src 'self'; manifest-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'"
     />
     <meta name="referrer" content="no-referrer" />
-    <meta name="theme-color" content="#f8f8f2" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f1ebdf" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#07080a" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
-      content="Atlas independiente de recursos de oncología para profesionales, pacientes y quienes les cuidan."
+      content="Atlas vivo de oncología: herramientas, guías y fuentes verificables para profesionales, pacientes y quienes cuidan."
     />
-    <title>KindForest · Atlas de oncología</title>
+    <title>KindForest · Atlas vivo de oncología</title>
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="icon" href="favicon.ico" />
+    <link rel="icon" href="favicon.ico" sizes="48x48" />
+    <link rel="icon" href="media/mark.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="media/app-192.png" />
+    <link rel="preload" href="vendor/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="vendor/instrument-sans.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="studio.css" />
+    <script src="theme-init.js"></script>
+    <script src="vendor/gsap.min.js" defer></script>
+    <script src="vendor/ScrollTrigger.min.js" defer></script>
+    <script src="vendor/SplitText.min.js" defer></script>
     <script type="module" src="app.js"></script>
   </head>
   <body>
     <a class="skip" href="#main">Saltar al contenido</a>
-    <header>
+    <header class="site-header" id="site-header">
       <div class="frame top">
         <a class="brand" href="./" aria-label="KindForest, inicio"
-          ><span class="mark" aria-hidden="true">✳</span> KindForest</a
+          ><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect class="mark-bg" width="64" height="64" rx="18"/><circle class="mark-ring" cx="32" cy="32" r="21.5" fill="none" stroke-width="3" stroke-dasharray="118 6" transform="rotate(-50 32 32)"/><path class="mark-leaf" d="M20.5 43.5C19 30 27.5 20.5 43.5 20.5 45 35.5 35.5 45 20.5 43.5Z"/><path class="mark-vein" d="M21 43 36.5 27.5" stroke-width="2.6" stroke-linecap="round"/><circle class="mark-dot" cx="44.5" cy="43.5" r="2.8"/></svg><span class="wordmark" aria-hidden="true">Kind<em>Forest</em></span></a
         >
         <nav aria-label="Principal">
-          <a href="#espacio">Herramientas</a><a href="#biblioteca">Biblioteca</a
-          ><button type="button" id="quick-help" aria-label="Ayuda urgente">
-            Ayuda urgente</button
-          ><button type="button" id="open-saved">
-            Mi selección <span class="count" id="saved-count">0</span>
+          <a class="nav-link" href="#espacio">Herramientas</a
+          ><a class="nav-link" href="#microscopio">Microscopio</a
+          ><a class="nav-link" href="#biblioteca">Biblioteca</a
+          ><button type="button" id="open-palette" class="search-trigger" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+            <svg class="i" width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg><span class="label">Buscar</span
+            ><kbd class="kbd shortcut" aria-hidden="true">Ctrl K</kbd>
+          </button
+          ><button type="button" id="theme-toggle" class="icon-button" aria-pressed="false" aria-label="Tema oscuro">
+            <svg class="i i-moon" width="19" height="19" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M227.89,147.89A96,96,0,1,1,108.11,28.11,96.09,96.09,0,0,0,227.89,147.89Z" opacity="0.2"/><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z"/></svg><svg class="i i-sun" width="19" height="19" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M184,128a56,56,0,1,1-56-56A56,56,0,0,1,184,128Z" opacity="0.2"/><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></svg>
+          </button
+          ><button type="button" id="quick-help" class="urgent" aria-label="Ayuda urgente">
+            <svg class="i" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M208,129v39H48V128a80,80,0,0,1,80.61-80C172.72,48.33,208,84.89,208,129Z" opacity="0.2"/><path d="M120,16V8a8,8,0,0,1,16,0v8a8,8,0,0,1-16,0Zm80,32a8,8,0,0,0,5.66-2.34l8-8a8,8,0,0,0-11.32-11.32l-8,8A8,8,0,0,0,200,48ZM50.34,45.66A8,8,0,0,0,61.66,34.34l-8-8A8,8,0,0,0,42.34,37.66Zm87,26.45a8,8,0,1,0-2.64,15.78C153.67,91.08,168,108.32,168,128a8,8,0,0,0,16,0C184,100.6,163.93,76.57,137.32,72.11ZM232,176v24a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V176a16,16,0,0,1,16-16V128a88,88,0,0,1,88-88h.68c48.15.36,87.33,40.29,87.33,89v31A16,16,0,0,1,232,176ZM56,160H200V129c0-40-32.05-72.71-71.45-73H128a72,72,0,0,0-72,72Zm160,40V176H40v24H216Z"/></svg><span class="label">Ayuda<span class="label-extra"> urgente</span></span>
+          </button
+          ><button type="button" id="open-saved" class="saved-trigger">
+            <svg class="i" width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"/></svg><span class="label">Mi selección</span>
+            <span class="count" id="saved-count">0</span>
           </button>
         </nav>
       </div>
+      <div class="progress" id="scroll-progress" aria-hidden="true"></div>
     </header>
-    <main id="main" class="frame">
-      <div class="audiences" role="group" aria-label="Elige tu recorrido">
-        <button id="pro" aria-pressed="true">Profesionales</button
-        ><button id="pac" aria-pressed="false">Pacientes y cuidadores</button>
+    <main id="main">
+      <section class="hero" id="hero" aria-labelledby="heading">
+        <div class="hero-media" aria-hidden="true">
+          <canvas class="hero-canvas" id="hero-canvas"></canvas>
+          <span class="hero-scrim"></span>
+        </div>
+        <div class="frame hero-inner">
+          <div class="hero-top">
+            <div class="audiences" role="group" aria-label="Elige tu recorrido">
+              <span class="audience-thumb" aria-hidden="true"></span
+              ><button id="pro" aria-pressed="true">Profesionales</button
+              ><button id="pac" aria-pressed="false">Pacientes y cuidadores</button>
+            </div>
+            <p class="hud" id="hero-source">Simulación generativa · no es una imagen clínica</p>
+          </div>
+          <div class="intro">
+            <p class="eyebrow"><span class="plate-tag">Lám. 0</span> Atlas vivo de oncología</p>
+            <h1 id="heading">Oncología en <em>consulta.</em></h1>
+            <p id="intro-text">
+              Consulta guías, encuentra sociedades médicas y prepara una
+              interconsulta con fuentes de referencia.
+            </p>
+            <button type="button" class="hero-search" id="hero-search" aria-haspopup="dialog">
+              <svg class="i" width="21" height="21" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg><span class="hero-search-text">Busca herramientas, guías, sociedades o congresos</span
+              ><kbd class="kbd shortcut" aria-hidden="true">Ctrl K</kbd>
+            </button>
+            <div class="suggest" id="hero-suggest" role="group" aria-label="Búsquedas sugeridas"></div>
+          </div>
+          <div class="hero-foot">
+            <ul class="stats" id="hero-stats" aria-label="El atlas en cifras">
+              <li><strong data-stat="tools">0</strong> <span>herramientas de práctica</span></li>
+              <li><strong data-stat="references">0</strong> <span>fichas con fuente enlazada</span></li>
+              <li><strong data-stat="congresses">0</strong> <span>congresos con fechas</span></li>
+              <li><strong>0</strong> <span>cuentas, cookies o rastreadores</span></li>
+            </ul>
+            <div class="hud hud-stage" aria-hidden="true">
+              <span id="hud-xy">X 0.500 · Y 0.500</span>
+              <span class="hud-scale"><i></i> Campo 01</span>
+            </div>
+            <button type="button" id="open-plate" class="plate-button">
+              <svg class="i" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M136,32V136a8,8,0,0,1-8,8H80a8,8,0,0,1-8-8V32a8,8,0,0,1,8-8h48A8,8,0,0,1,136,32Z" opacity="0.2"/><path d="M224,208H203.94A88.05,88.05,0,0,0,144,64.37V32a16,16,0,0,0-16-16H80A16,16,0,0,0,64,32V136a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V80.46A72,72,0,0,1,181.25,208H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16Zm-96-72H80V32h48V136ZM72,184a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Z"/></svg> Ver micrografía real
+            </button>
+          </div>
+        </div>
+      </section>
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track" id="marquee"></div>
       </div>
-      <section class="hero" aria-labelledby="heading">
-        <div class="intro">
-          <div class="eyebrow">
-            <span class="rule"></span> Atlas de oncología
+      <section id="espacio" class="band" aria-labelledby="tools-title">
+        <div class="frame">
+          <header class="plate-head">
+            <span class="plate-no" aria-hidden="true">I</span>
+            <div class="plate-titles">
+              <p class="eyebrow"><span class="plate-tag">Lám. I</span> Espacio de trabajo</p>
+              <h2 id="tools-title">Mesa de consulta</h2>
+            </div>
+            <label class="search"
+              ><svg class="i" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg><span class="sr">Buscar una herramienta</span
+              ><input id="tool-query" type="text" maxlength="80" autocomplete="off" placeholder="Filtrar herramientas"
+            /></label>
+          </header>
+          <div id="tool-tabs" class="tool-tabs" role="group" aria-label="Áreas de trabajo"></div>
+          <p id="tool-count" class="result-count" role="status"></p>
+          <div id="tool-grid" class="tool-grid"></div>
+        </div>
+      </section>
+      <section id="microscopio" class="band band-slide" aria-labelledby="gallery-title">
+        <div class="frame">
+          <header class="plate-head">
+            <span class="plate-no" aria-hidden="true">II</span>
+            <div class="plate-titles">
+              <p class="eyebrow"><span class="plate-tag">Lám. II</span> De Virchow a la fluorescencia</p>
+              <h2 id="gallery-title">Bajo el <em>microscopio.</em></h2>
+            </div>
+            <p class="section-lede">Imágenes de archivo con su autoría y licencia. Elige una figura para ver su ficha y su fuente.</p>
+          </header>
+        </div>
+        <div class="gallery" id="gallery" role="list" aria-label="Figuras"></div>
+        <div class="frame gallery-nav">
+          <p class="hud" id="gallery-status" aria-hidden="true"></p>
+          <div class="gallery-buttons">
+            <button type="button" class="round-button" id="gallery-prev" aria-label="Figuras anteriores"><svg class="i flip" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></button
+            ><button type="button" class="round-button" id="gallery-next" aria-label="Figuras siguientes"><svg class="i" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></button>
           </div>
-          <h1 id="heading">Oncología en <em>consulta.</em></h1>
-          <p id="intro-text">
-            Consulta guías, encuentra sociedades médicas y prepara una
-            interconsulta con fuentes de referencia.
-          </p>
-          <a class="primary" href="#espacio"
-            >Explorar herramientas <span aria-hidden="true">↗</span></a
+        </div>
+      </section>
+      <section id="biblioteca" class="band" aria-labelledby="library-title">
+        <div class="frame">
+          <header class="plate-head">
+            <span class="plate-no" aria-hidden="true">III</span>
+            <div class="plate-titles">
+              <p class="eyebrow"><span class="plate-tag">Lám. III</span> Biblioteca</p>
+              <h2 id="library-title">Recursos profesionales</h2>
+            </div>
+            <label class="search"
+              ><svg class="i" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg><span class="sr">Buscar en la biblioteca</span
+              ><input id="search" type="search" placeholder="Buscar un recurso" autocomplete="off" maxlength="100"
+            /></label>
+          </header>
+          <div id="filters" class="filters" role="group" aria-label="Filtrar por categoría"></div>
+          <p id="results-info" class="result-count" role="status"></p>
+          <div id="resources" class="grid"></div>
+          <noscript
+            ><p>
+              Puedes consultar directamente las
+              <a href="https://mascc.org/mascc-guidelines/">guías MASCC</a>, el
+              <a href="https://www.cancer.gov/espanol">Instituto Nacional del Cáncer</a>
+              y el
+              <a href="https://clinicaltrials.gov/">registro de ensayos clínicos</a>.
+              Activa JavaScript para filtrar recursos y preparar una consulta.
+            </p></noscript
           >
+          <section class="prep" aria-labelledby="prep-title">
+            <img class="prep-fern" src="media/fern.webp" width="560" height="1265" alt="" loading="lazy" decoding="async" />
+            <div class="prep-text">
+              <p class="eyebrow"><span class="plate-tag">Ficha</span> Preparación de consulta</p>
+              <h2 id="prep-title">Prepara la interconsulta</h2>
+              <p id="prep-text">
+                Arma una lista de puntos para revisar con el equipo que recibe el caso.
+              </p>
+            </div>
+            <button id="open-plan" class="primary">
+              Abrir lista <svg class="i" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+            </button>
+          </section>
         </div>
-        <figure>
-          <img src="media/mitosis.webp" width="512" height="512" alt="" />
-          <button id="open-plate" aria-label="Ampliar micrografía">
-            <img src="icons/scan-line.svg" width="20" height="20" alt="" />
-          </button>
-          <figcaption>
-            <span>Microscopía</span> Células humanas en mitosis · D. Root
-          </figcaption>
-        </figure>
       </section>
-      <section id="espacio" aria-labelledby="tools-title">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow"><span class="dot"></span> Espacio de trabajo</p>
-            <h2 id="tools-title">Mesa de consulta</h2>
-          </div>
-          <label class="search"
-            ><img src="icons/search.svg" width="18" height="18" alt="" /><span
-              class="sr"
-              >Buscar una herramienta</span
-            ><input
-              id="tool-query"
-              type="text"
-              maxlength="80"
-              placeholder="Buscar una herramienta"
-          /></label>
+      <section class="band principles" aria-labelledby="principles-title">
+        <div class="frame">
+          <header class="plate-head">
+            <span class="plate-no" aria-hidden="true">IV</span>
+            <div class="plate-titles">
+              <p class="eyebrow"><span class="plate-tag">Lám. IV</span> Compromisos verificables</p>
+              <h2 id="principles-title">Hecho para <em>confiar.</em></h2>
+            </div>
+            <p class="section-lede">Cada compromiso se comprueba aquí mismo, en tu navegador, sin pedirte nada.</p>
+          </header>
+          <ul class="principle-grid">
+            <li class="principle" data-tone="green">
+              <span class="principle-icon"><svg class="i" width="26" height="26" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M208,88H48a8,8,0,0,0-8,8V208a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V96A8,8,0,0,0,208,88Zm-80,72a20,20,0,1,1,20-20A20,20,0,0,1,128,160Z" opacity="0.2"/><path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Zm-80-96a28,28,0,0,0-8,54.83V184a8,8,0,0,0,16,0V166.83A28,28,0,0,0,128,112Zm0,40a12,12,0,1,1,12-12A12,12,0,0,1,128,152Z"/></svg></span>
+              <h3>Privado por diseño</h3>
+              <p>Sin cuentas, cookies ni rastreadores. Lo que anotas vive en esta pestaña y se borra al recargar.</p>
+              <p class="proof" id="proof-privacy">Comprobando…</p>
+            </li>
+            <li class="principle" data-tone="blue">
+              <span class="principle-icon"><svg class="i" width="26" height="26" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M238.2,87.69l-104,125.43a8,8,0,0,1-12.3,0L17.8,87.69a7.79,7.79,0,0,1,1.31-11.21,180.75,180.75,0,0,1,217.78,0A7.79,7.79,0,0,1,238.2,87.69Z" opacity="0.2"/><path d="M53.92,34.62A8,8,0,1,0,42.08,45.38l4.55,5A187.93,187.93,0,0,0,14.28,70.1,15.93,15.93,0,0,0,8.11,80.91,15.65,15.65,0,0,0,11.65,92.8l104,125.43A15.93,15.93,0,0,0,128,224h0a15.93,15.93,0,0,0,12.31-5.77l28.1-33.88,33.67,37a8,8,0,1,0,11.84-10.76ZM128,208,24.09,82.74A171.5,171.5,0,0,1,57.91,62.79l99.63,109.6ZM244.35,92.8l-49.42,59.58a8,8,0,0,1-12.32-10.21l49.3-59.43A170.76,170.76,0,0,0,128,48a175.15,175.15,0,0,0-32.39,3,8,8,0,1,1-3-15.72A190.62,190.62,0,0,1,128,32,186.67,186.67,0,0,1,241.72,70.1a15.93,15.93,0,0,1,6.17,10.81A15.65,15.65,0,0,1,244.35,92.8Z"/></svg></span>
+              <h3>Funciona sin conexión</h3>
+              <p>Tras la primera visita completa, el atlas vuelve a abrir aunque no tengas internet.</p>
+              <p class="proof" id="proof-offline">Comprobando…</p>
+            </li>
+            <li class="principle" data-tone="violet">
+              <span class="principle-icon"><svg class="i" width="26" height="26" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M104,40a24,24,0,1,1,24,24A24,24,0,0,1,104,40ZM212,80H44c-12.87,0-16.71,17.5-5,22.9L96,128,73.13,214.93a12,12,0,0,0,21.75,10.14L128,168l33.12,57.07a12,12,0,0,0,21.75-10.14L160,128l57-25.1C228.69,97.5,224.85,80,212,80Z" opacity="0.2"/><path d="M160,40a32,32,0,1,0-32,32A32,32,0,0,0,160,40ZM128,56a16,16,0,1,1,16-16A16,16,0,0,1,128,56ZM231.5,87.71A19.62,19.62,0,0,0,212,72H44a20,20,0,0,0-8.38,38.16l.13.06,50.75,22.35-21,79.72A20,20,0,0,0,102,228.82l26-44.88,26,44.88a20,20,0,0,0,36.4-16.53l-21-79.72,50.75-22.35.13-.06A19.63,19.63,0,0,0,231.5,87.71Zm-17.8,7.9-56.93,25.07a8,8,0,0,0-4.51,9.36L175.13,217a7,7,0,0,0,.49,1.35,4,4,0,1,1-7.25,3.38c-.11-.22-.22-.43-.34-.63L134.92,164a8,8,0,0,0-13.84,0L88,221.06c-.12.2-.23.41-.34.63a4,4,0,1,1-7.25-3.38,7,7,0,0,0,.49-1.35L103.74,130a8,8,0,0,0-4.51-9.36L42.3,95.61A4,4,0,0,1,44,88H212a4,4,0,0,1,1.73,7.61Z"/></svg></span>
+              <h3>Accesible</h3>
+              <p>Teclado, lector de pantalla, texto grande, tema oscuro y movimiento reducido.</p>
+              <p class="proof"><button type="button" class="proof-button" id="proof-a11y">Abrir opciones de lectura <svg class="i" width="15" height="15" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></button></p>
+            </li>
+            <li class="principle" data-tone="amber">
+              <span class="principle-icon"><svg class="i" width="26" height="26" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M232,128c0,12.51-17.82,21.95-22.68,33.69-4.68,11.32,1.42,30.65-7.78,39.85s-28.53,3.1-39.85,7.78C150,214.18,140.5,232,128,232s-22-17.82-33.69-22.68c-11.32-4.68-30.65,1.42-39.85-7.78s-3.1-28.53-7.78-39.85C41.82,150,24,140.5,24,128s17.82-22,22.68-33.69C51.36,83,45.26,63.66,54.46,54.46S83,51.36,94.31,46.68C106.05,41.82,115.5,24,128,24S150,41.82,161.69,46.68c11.32,4.68,30.65-1.42,39.85,7.78s3.1,28.53,7.78,39.85C214.18,106.05,232,115.5,232,128Z" opacity="0.2"/><path d="M225.86,102.82c-3.77-3.94-7.67-8-9.14-11.57-1.36-3.27-1.44-8.69-1.52-13.94-.15-9.76-.31-20.82-8-28.51s-18.75-7.85-28.51-8c-5.25-.08-10.67-.16-13.94-1.52-3.56-1.47-7.63-5.37-11.57-9.14C146.28,23.51,138.44,16,128,16s-18.27,7.51-25.18,14.14c-3.94,3.77-8,7.67-11.57,9.14C88,40.64,82.56,40.72,77.31,40.8c-9.76.15-20.82.31-28.51,8S41,67.55,40.8,77.31c-.08,5.25-.16,10.67-1.52,13.94-1.47,3.56-5.37,7.63-9.14,11.57C23.51,109.72,16,117.56,16,128s7.51,18.27,14.14,25.18c3.77,3.94,7.67,8,9.14,11.57,1.36,3.27,1.44,8.69,1.52,13.94.15,9.76.31,20.82,8,28.51s18.75,7.85,28.51,8c5.25.08,10.67.16,13.94,1.52,3.56,1.47,7.63,5.37,11.57,9.14C109.72,232.49,117.56,240,128,240s18.27-7.51,25.18-14.14c3.94-3.77,8-7.67,11.57-9.14,3.27-1.36,8.69-1.44,13.94-1.52,9.76-.15,20.82-.31,28.51-8s7.85-18.75,8-28.51c.08-5.25.16-10.67,1.52-13.94,1.47-3.56,5.37-7.63,9.14-11.57C232.49,146.28,240,138.44,240,128S232.49,109.73,225.86,102.82Zm-11.55,39.29c-4.79,5-9.75,10.17-12.38,16.52-2.52,6.1-2.63,13.07-2.73,19.82-.1,7-.21,14.33-3.32,17.43s-10.39,3.22-17.43,3.32c-6.75.1-13.72.21-19.82,2.73-6.35,2.63-11.52,7.59-16.52,12.38S132,224,128,224s-9.15-4.92-14.11-9.69-10.17-9.75-16.52-12.38c-6.1-2.52-13.07-2.63-19.82-2.73-7-.1-14.33-.21-17.43-3.32s-3.22-10.39-3.32-17.43c-.1-6.75-.21-13.72-2.73-19.82-2.63-6.35-7.59-11.52-12.38-16.52S32,132,32,128s4.92-9.15,9.69-14.11,9.75-10.17,12.38-16.52c2.52-6.1,2.63-13.07,2.73-19.82.1-7,.21-14.33,3.32-17.43S70.51,56.9,77.55,56.8c6.75-.1,13.72-.21,19.82-2.73,6.35-2.63,11.52-7.59,16.52-12.38S124,32,128,32s9.15,4.92,14.11,9.69,10.17,9.75,16.52,12.38c6.1,2.52,13.07,2.63,19.82,2.73,7,.1,14.33.21,17.43,3.32s3.22,10.39,3.32,17.43c.1,6.75.21,13.72,2.73,19.82,2.63,6.35,7.59,11.52,12.38,16.52S224,124,224,128,219.08,137.15,214.31,142.11ZM173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z"/></svg></span>
+              <h3>Fuentes verificables</h3>
+              <p>Cada ficha nombra a su institución y enlaza a la fuente original para confirmar vigencia.</p>
+              <p class="proof" id="proof-sources">Comprobando…</p>
+            </li>
+          </ul>
         </div>
-        <div
-          id="tool-tabs"
-          class="tool-tabs"
-          role="group"
-          aria-label="Áreas de trabajo"
-        ></div>
-        <p id="tool-count" class="result-count" role="status"></p>
-        <div id="tool-grid" class="tool-grid"></div>
-      </section>
-      <section id="biblioteca" aria-labelledby="library-title">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow"><span class="dot"></span> Biblioteca</p>
-            <h2 id="library-title">Recursos profesionales</h2>
-          </div>
-          <label class="search"
-            ><img src="icons/search.svg" width="18" height="18" alt="" /><span class="sr">Buscar en la biblioteca</span
-            ><input
-              id="search"
-              type="search"
-              placeholder="Buscar un recurso"
-              maxlength="100"
-          /></label>
-        </div>
-        <div
-          id="filters"
-          class="filters"
-          role="group"
-          aria-label="Filtrar por categoría"
-        ></div>
-        <p id="results-info" class="result-count" role="status"></p>
-        <div id="resources" class="grid"></div>
-        <noscript
-          ><p>
-            Puedes consultar directamente las
-            <a href="https://mascc.org/mascc-guidelines/">guías MASCC</a>, el
-            <a href="https://www.cancer.gov/espanol"
-              >Instituto Nacional del Cáncer</a
-            >
-            y el
-            <a href="https://clinicaltrials.gov/"
-              >registro de ensayos clínicos</a
-            >. Activa JavaScript para filtrar recursos y preparar una consulta.
-          </p></noscript
-        >
-      </section>
-      <section class="prep" aria-labelledby="prep-title">
-        <div>
-          <p class="eyebrow">
-            <span class="dot"></span> Preparación de consulta
-          </p>
-          <h2 id="prep-title">Prepara la interconsulta</h2>
-          <p id="prep-text">
-            Arma una lista de puntos para revisar con el equipo que recibe el
-            caso.
-          </p>
-        </div>
-        <button id="open-plan" class="secondary">
-          Abrir lista <span aria-hidden="true">→</span>
-        </button>
       </section>
     </main>
-    <footer>
+    <footer class="site-footer">
       <div class="frame foot">
-        <span>KindForest · Atlas independiente de oncología</span
-        ><button id="display-options">Lectura y acceso</button
-        ><button id="privacy">Privacidad y alcance</button>
+        <p class="foot-word" aria-hidden="true">Kind<em>Forest</em></p>
+        <div class="foot-row">
+          <p class="foot-about">Atlas vivo e independiente de oncología para profesionales, pacientes y quienes cuidan. Material educativo: no sustituye la atención de tu equipo de salud.</p>
+          <div class="foot-links">
+            <button id="display-options">Lectura y acceso</button
+            ><button id="privacy">Privacidad y alcance</button
+            ><button id="foot-search">Buscar en el atlas</button>
+          </div>
+        </div>
+        <p class="foot-note">
+          Imágenes: Wellcome Collection (CC BY 4.0 y dominio público) y David Root (CC0) · Tipografías Fraunces, Instrument Sans y Martian Mono (OFL) · Iconos Phosphor (MIT) · Animación GSAP · WebGL con OGL
+        </p>
       </div>
     </footer>
     <dialog id="panel" aria-labelledby="panel-title">
       <div class="dialog-head">
-        <h2 id="panel-title"></h2>
-        <button id="close" aria-label="Cerrar ventana">×</button>
+        <span class="dialog-icon" id="panel-icon" hidden></span>
+        <div class="dialog-titles">
+          <p class="dialog-eyebrow" id="panel-eyebrow" hidden></p>
+          <h2 id="panel-title"></h2>
+        </div>
+        <button id="close" aria-label="Cerrar ventana"><svg class="i" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
       </div>
       <div id="panel-body"></div>
     </dialog>
+    <dialog id="palette" class="palette" aria-label="Buscar en KindForest">
+      <div class="palette-field">
+        <svg class="i" width="21" height="21" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+        <input
+          id="palette-input"
+          type="text"
+          role="combobox"
+          aria-expanded="true"
+          aria-controls="palette-list"
+          aria-autocomplete="list"
+          aria-label="Buscar en KindForest"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="80"
+          placeholder="Herramientas, recursos, guías, sociedades…"
+        />
+        <kbd class="kbd" aria-hidden="true">Esc</kbd>
+      </div>
+      <div id="palette-list" class="palette-list" role="listbox" aria-label="Resultados"></div>
+      <div class="palette-foot" aria-hidden="true">
+        <span><kbd class="kbd">↑</kbd><kbd class="kbd">↓</kbd> navegar</span>
+        <span><kbd class="kbd">↵</kbd> abrir</span>
+        <span><kbd class="kbd">Esc</kbd> cerrar</span>
+      </div>
+      <p id="palette-status" class="sr" role="status"></p>
+    </dialog>
+    <div id="toast" class="toast" popover="manual" aria-hidden="true">
+      <span class="toast-icon"><svg class="i" width="15" height="15" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/></svg></span><span id="toast-text"></span>
+    </div>
     <p id="announce" class="sr" role="status"></p>
   </body>
 </html>

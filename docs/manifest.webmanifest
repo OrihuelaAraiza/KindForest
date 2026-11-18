@@ -1,13 +1,13 @@
 {
-  "name": "KindForest · Atlas de oncología",
+  "name": "KindForest · Atlas vivo de oncología",
   "short_name": "KindForest",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "lang": "es-MX",
-  "background_color": "#f6f7f2",
-  "theme_color": "#103d3c",
+  "background_color": "#f1ebdf",
+  "theme_color": "#0e3b2e",
   "icons": [
     {
       "src": "media/app-192.png",
