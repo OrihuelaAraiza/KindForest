@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content="#f8f8f2" />
+    <meta
+      name="description"
+      content="Atlas independiente de recursos de oncología para profesionales, pacientes y quienes les cuidan."
+    />
+    <title>KindForest · Atlas de oncología</title>
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Saltar al contenido</a>
+    <header>
+      <div class="frame top">
+        <a class="brand" href="./" aria-label="KindForest, inicio"
+          ><span class="mark" aria-hidden="true">✳</span> KindForest</a
+        >
+        <nav aria-label="Principal">
+          <a href="#biblioteca">Biblioteca</a
+          ><button type="button" id="open-saved">
+            Mi selección <span class="count" id="saved-count">0</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+    <main id="main" class="frame">
+      <div class="audiences" role="group" aria-label="Elige tu recorrido">
+        <button id="pro" aria-pressed="true">Profesionales</button
+        ><button id="pac" aria-pressed="false">Pacientes y cuidadores</button>
+      </div>
+      <section class="hero" aria-labelledby="heading">
+        <div class="intro">
+          <div class="eyebrow">
+            <span class="rule"></span> Atlas de oncología
+          </div>
+          <h1 id="heading">Oncología en <em>consulta.</em></h1>
+          <p id="intro-text">
+            Consulta guías, encuentra sociedades médicas y prepara una
+            interconsulta con fuentes de referencia.
+          </p>
+          <a class="primary" href="#biblioteca"
+            >Explorar biblioteca <span aria-hidden="true">↓</span></a
+          >
+        </div>
+        <figure>
+          <img src="media/tejido.webp" width="864" height="552" alt="" />
+          <figcaption>
+            <span>FIG. 01</span> Tejido celular · Ilustración
+          </figcaption>
+        </figure>
+      </section>
+      <section id="biblioteca" aria-labelledby="library-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow"><span class="dot"></span> Biblioteca</p>
+            <h2 id="library-title">Recursos profesionales</h2>
+          </div>
+          <label class="search"
+            ><span aria-hidden="true">⌕</span
+            ><span class="sr">Buscar en la biblioteca</span
+            ><input
+              id="search"
+              type="search"
+              placeholder="Buscar un recurso"
+              maxlength="100"
+          /></label>
+        </div>
+        <div
+          id="filters"
+          class="filters"
+          role="group"
+          aria-label="Filtrar por categoría"
+        ></div>
+        <p id="results-info" class="sr" role="status"></p>
+        <div id="resources" class="grid"></div>
+        <noscript
+          ><p>
+            Puedes consultar directamente las
+            <a href="https://mascc.org/mascc-guidelines/">guías MASCC</a>, el
+            <a href="https://www.cancer.gov/espanol"
+              >Instituto Nacional del Cáncer</a
+            >
+            y el
+            <a href="https://clinicaltrials.gov/"
+              >registro de ensayos clínicos</a
+            >. Activa JavaScript para filtrar recursos y preparar una consulta.
+          </p></noscript
+        >
+      </section>
+      <section class="prep" aria-labelledby="prep-title">
+        <div>
+          <p class="eyebrow">
+            <span class="dot"></span> Preparación de consulta
+          </p>
+          <h2 id="prep-title">Prepara la interconsulta</h2>
+          <p id="prep-text">
+            Arma una lista de puntos para revisar con el equipo que recibe el
+            caso.
+          </p>
+        </div>
+        <button id="open-plan" class="secondary">
+          Abrir lista <span aria-hidden="true">→</span>
+        </button>
+      </section>
+    </main>
+    <footer>
+      <div class="frame foot">
+        <span>KindForest · Atlas independiente de oncología</span
+        ><button id="privacy">Privacidad y alcance</button>
+      </div>
+    </footer>
+    <dialog id="panel" aria-labelledby="panel-title">
+      <div class="dialog-head">
+        <h2 id="panel-title"></h2>
+        <button id="close" aria-label="Cerrar ventana">×</button>
+      </div>
+      <div id="panel-body"></div>
+    </dialog>
+    <p id="announce" class="sr" role="status"></p>
+  </body>
+</html>
