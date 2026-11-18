@@ -2,7 +2,7 @@ import { advancedTools, downloadText } from "./advanced-tools.js";
 import { referenceBrowser } from "./reference-browser.js";
 import Fuse from "./vendor/fuse.mjs";
 import { modules, questions } from "./modules.js";
-import { groupTones } from "./glyphs.js";
+import { groupTones, iconMask } from "./glyphs.js";
 
 const cases = [
   {
@@ -95,14 +95,9 @@ export function createWorkspace({
         minute: "2-digit",
       }),
     });
-  function icon(name) {
-    const img = el("img");
-    img.src = "icons/" + name + ".svg";
-    img.alt = "";
-    img.width = 22;
-    img.height = 22;
-    return img;
-  }
+  const icon = (name) => iconMask(name, 24);
+  // Stable catalog numbers, like specimens in an atlas.
+  const code = (m) => "KF-" + String(modules.indexOf(m) + 1).padStart(3, "0");
   function field(name, input) {
     const label = el("label", name, "desk-field");
     label.append(input);
@@ -990,7 +985,7 @@ export function createWorkspace({
       const css = getComputedStyle(document.documentElement);
       Chart.defaults.color = css.getPropertyValue("--ink-2").trim();
       Chart.defaults.borderColor = css.getPropertyValue("--line").trim();
-      Chart.defaults.font.family = "Manrope, system-ui, sans-serif";
+      Chart.defaults.font.family = "'Instrument Sans', system-ui, sans-serif";
       usageChart = new Chart(canvas, {
         type: "bar",
         data: {
@@ -1184,7 +1179,9 @@ export function createWorkspace({
       const top = el("span", undefined, "tool-meta");
       const glyph = el("span", undefined, "tool-icon");
       glyph.append(icon(m.icon));
-      top.append(glyph, el("span", m.group));
+      const number = el("span", code(m), "tool-code");
+      number.setAttribute("aria-hidden", "true");
+      top.append(glyph, el("span", m.group), number);
       const title = el("strong", m.name);
       const desc = el("small", m.summary);
       const arr = el("span", "↗", "tool-arrow");

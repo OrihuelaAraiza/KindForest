@@ -1,7 +1,7 @@
 // Command palette: one keyboard-first search over tools, library resources,
 // reference directories and page actions. Everything runs locally.
 import Fuse from "./vendor/fuse.mjs";
-import { glyph, iconImage } from "./glyphs.js";
+import { glyph, iconMask } from "./glyphs.js";
 
 const limits = { tool: 6, resource: 5, directory: 6, action: 4 };
 const fold = (text) =>
@@ -91,7 +91,7 @@ export function createPalette({ items, suggestions, announce }) {
     if (item.tone) node.dataset.tone = item.tone;
     const icon = document.createElement("span");
     icon.className = "opt-icon";
-    icon.append(item.icon ? iconImage(item.icon, 18) : glyph(item.glyph, 18));
+    icon.append(item.icon ? iconMask(item.icon, 20) : glyph(item.glyph, 20));
     const text = document.createElement("span");
     text.className = "opt-text";
     const title = document.createElement("span");
