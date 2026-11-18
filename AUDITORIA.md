@@ -2,6 +2,23 @@
 
 **18 de noviembre de 2026.** La portada se identifica como ROMI Clinical Intelligence. Se obtuvo una respuesta HTTP 200 y se revisaron el documento de entrada, su navegación, las once páginas HTML enlazadas desde el menú, el catálogo público de apoyos y las cabeceras de la portada. El alcance es la experiencia publicada que llega al navegador. Los datos de pacientes, las cuentas, los permisos efectivos del servidor, la facturación y la operación clínica quedan sin verificar. [Sitio de referencia](https://kind-forest-0ad32cb0f.6.azurestaticapps.net/)
 
+## Segunda exploración y cobertura actual
+
+Se volvió a cargar la portada y se recorrieron el selector de público, la bienvenida de Onco-Pilot y su vista de ejemplo en español. Esta última ofrece síntomas, medicinas, confirmación o cambio de cita, lectura en voz alta y cuidado diario. Las entradas profesionales incluyen agenda, recepción, expediente, interconsulta, red, tablero de alertas, agentes, gestión y comunidad. Algunas funciones se identificaron en la navegación declarada por el cliente; no se accedió a cuentas ajenas ni se verificó el funcionamiento del servidor.
+
+| Área observada | Implementación actual en KindForest | Límite de la adaptación |
+| --- | --- | --- |
+| Agenda, recepción, expediente y hospital | Casos ficticios, altas en el listado, notas, gestión por hora y estado, cambio de cita, calendario ICS, asignación de cama, traslado y alta. | Estado en memoria. La sesión de práctica no es un expediente clínico institucional. |
+| Interconsulta, alertas, seguimiento, comités y autorizaciones | Borrador descargable, tableros por caso, reportes del diario con revisión y resumen exportable por sección. | Las acciones no contactan a especialistas y los permisos de práctica no sustituyen autorización de un servidor. |
+| Onco-Pilot, guías de cuidados y orientación | Diario, documentos, recordatorios durante la sesión, tareas de acompañamiento, preparación de cita, recursos de nutrición, llamada a emergencias y lectura local cuando existe una voz disponible. | Sin monitorización, avisos fuera de la sesión, transcripción de entrevistas ni interpretación clínica automatizada. |
+| Investigación, congresos y red | Constructor de protocolo, consulta de ensayos, 14 congresos, 17 guías, 34 sociedades y 22 fichas de apoyo, filtros y favoritos. | Datos de referencia fechados. Las colaboraciones, inscripciones, mensajería y directorios vivos permanecen en los servicios externos. |
+| Administración, aprendizaje y bienestar | Presupuestos, honorarios y costos estimados, distribución del tiempo, indicadores de sesión, IMC de práctica, aula, juego de memoria, pausas y actividades. | El comparador de planes es informativo. La facturación, cobros, donaciones y acceso profesional verificado requieren servicios institucionales. |
+| Agente, acceso y entrega | Búsqueda local aproximada, lectura accesible, enlace del recorrido, instalación web y uso sin conexión tras la primera carga completa. | La búsqueda no es IA clínica. Quedan fuera las cuentas biométricas, sincronización, IA remota, recetas firmadas, recomendaciones de tratamiento y la paridad multilingüe del original. |
+
+Se probaron los recorridos de los dos públicos, apertura y contenido de todas las herramientas, búsqueda, selección, seguimiento entre módulos, cálculos monetarios, exportación y reapertura sin conexión. En siete vistas de Chromium a 390 px no se detectaron infracciones con las reglas automáticas WCAG A/AA 2.0 y 2.1 de axe-core. Esto no constituye una certificación de accesibilidad o de seguridad clínica.
+
+## Primera entrega (registro histórico)
+
 ## Qué ofrece el sitio
 
 | Recorrido | Elementos observados | Cobertura en KindForest |

@@ -1,3 +1,5 @@
+import { accessibility } from "./accessibility.js";
+import { createWorkspace } from "./workspace.js";
 import { catalog, profiles } from "./catalog.js";
 
 const byId = (id) => document.getElementById(id);
@@ -247,6 +249,9 @@ function renderProfile() {
     ...categories.map((c) => action(c, () => setFilter(c))),
   );
   setFilter("Todos");
+  workspace.setRole(role);
+  byId("tools-title").textContent =
+    role === "pro" ? "Mesa de consulta" : "Mi espacio de cuidado";
 }
 function plan() {
   const p = profiles[role],
@@ -298,7 +303,7 @@ window.addEventListener("popstate", () => {
 });
 byId("open-saved").addEventListener("click", selection);
 byId("open-plan").addEventListener("click", plan);
-byId("privacy").addEventListener("click", () => {
+function privacy() {
   show("Privacidad y alcance");
   body.append(
     el(
@@ -307,7 +312,7 @@ byId("privacy").addEventListener("click", () => {
     ),
     el(
       "p",
-      "Las búsquedas, la selección y las listas se procesan en la memoria de esta página. Se borran al recargarla. Las fuentes externas se abren en otra pestaña y aplican su propia política de privacidad.",
+      "Los casos ficticios, notas, búsquedas y listas permanecen en la memoria de la pestaña hasta que se recarga. La función sin conexión guarda únicamente archivos públicos del sitio. Las fuentes externas se abren en otra pestaña y aplican su propia política de privacidad.",
     ),
     el(
       "p",
@@ -318,6 +323,44 @@ byId("privacy").addEventListener("click", () => {
       "Para decisiones sobre diagnóstico, tratamiento o síntomas, consulta a tu equipo de atención. En una emergencia contacta a los servicios de urgencias locales.",
     ),
   );
+}
+byId("privacy").addEventListener("click", privacy);
+byId("open-plate").addEventListener("click", () => {
+  show("Células humanas en mitosis");
+  const photo = el("img", undefined, "full-plate");
+  photo.src = "media/mitosis.webp";
+  photo.alt =
+    "Campo microscópico con células brillantes en distintas fases de división sobre fondo oscuro.";
+  photo.width = 512;
+  photo.height = 512;
+  const link = el(
+    "a",
+    "Consultar la procedencia de la imagen ↗",
+    "source-link",
+  );
+  link.href =
+    "https://scikit-image.org/docs/stable/api/skimage.data.html#skimage.data.human_mitosis";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  body.append(
+    photo,
+    el(
+      "p",
+      "Micrografía de David Root, distribuida bajo CC0. La portada muestra un recorte con tratamiento de color; aquí puedes ver el campo completo.",
+      "note",
+    ),
+    link,
+  );
+});
+accessibility({ el, action, show, body });
+const workspace = createWorkspace({
+  el,
+  action,
+  show,
+  body,
+  detail: (id) => detail(catalog.find((r) => r.id === id)),
+  plan,
+  privacy,
 });
 byId("search").addEventListener("input", renderCards);
 byId("close").addEventListener("click", () => panel.close());
@@ -325,3 +368,12 @@ panel.addEventListener("close", () => {
   if (opener?.isConnected) opener.focus();
 });
 renderProfile();
+
+// Files for offline use are public assets; plan and case state stays in memory.
+if ("serviceWorker" in navigator && window.isSecureContext) {
+  navigator.serviceWorker
+    .register("./sw.js", { updateViaCache: "none" })
+    .catch(() => {
+      // Online use remains available when browser or host policy disables workers.
+    });
+}

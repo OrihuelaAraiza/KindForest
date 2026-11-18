@@ -1,6 +1,6 @@
 # KindForest · Atlas de oncología
 
-Una adaptación independiente de los recorridos públicos de ROMI Clinical Intelligence. El atlas reúne recursos de oncología para profesionales, pacientes y cuidadores. Los textos y la ilustración se prepararon para este proyecto.
+Una adaptación independiente de los recorridos públicos de ROMI Clinical Intelligence. El atlas reúne recursos de oncología para profesionales, pacientes y cuidadores. Incluye una mesa de trabajo con casos ficticios y un recorrido de cuidado para pacientes.
 
 El código del sitio está en `docs/` de `main`. GitHub Pages sirve esos mismos archivos desde la raíz de la rama `gh-pages`. [Abrir el atlas](https://orihuelaaraiza.github.io/KindForest/)
 
@@ -16,7 +16,9 @@ Abre `http://127.0.0.1:8086/` en el mismo equipo. El recorrido de pacientes tien
 - **Pacientes y cuidadores.** Nueve fichas sobre preparación de consulta, ensayos y apoyos, incluidos tres recursos de México. La ficha de ensayos permite preparar una búsqueda por país y reclutamiento en ClinicalTrials.gov.
 - **Mi selección.** Conserva las fichas de ambos recorridos mientras la página siga abierta. Recargar borra las selecciones y las listas. Los documentos impresos o guardados como PDF los conserva quien los genera.
 
-El catálogo se edita en `docs/catalog.js`. Los destinos externos se abren al elegir la fuente. El documento de [auditoría pública](AUDITORIA.md) indica qué se observó, qué se implementó y qué módulos siguen pendientes.
+La mesa reúne 50 herramientas distintas. En **Todo** se muestran las disponibles para el público seleccionado. La agenda permite registrar llegadas, reprogramar y exportar citas en ICS. Los reportes del diario se reflejan en la bandeja de revisión y el expediente de práctica. Las notas, las tareas y los presupuestos duran una sesión. La lista y los borradores pueden descargarse cuando la herramienta lo indica.
+
+Los directorios añaden 17 guías, 34 sociedades, 22 apoyos y 14 congresos. Las fuentes y las licencias visuales se documentan en [FUENTES.md](FUENTES.md). Las herramientas están en `docs/modules.js` y los directorios en `docs/directories.js`. El catálogo de la biblioteca se edita en `docs/catalog.js`. Los destinos externos se abren al elegir la fuente. El documento de [auditoría pública](AUDITORIA.md) indica qué se observó, qué se implementó y qué módulos siguen pendientes.
 
 ## Verificación
 
@@ -30,7 +32,7 @@ La prueba inicia su propio servidor en un puerto temporal y recorre el atlas en 
 
 ## Publicar una actualización
 
-Una vez probados y subidos los cambios a `main`, publica el contenido de `docs/` en la rama de Pages. Desde la raíz del repositorio:
+Tras editar el sitio, ejecuta `python3 tools/prepare_offline.py` e incluye el índice actualizado en el commit. El navegador conserva los archivos públicos para volver a abrir el atlas sin conexión. Una vez probados y subidos los cambios a `main`, publica el contenido de `docs/` en la rama de Pages. Desde la raíz del repositorio:
 
 ```sh
 git fetch origin main gh-pages &&
