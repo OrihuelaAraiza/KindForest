@@ -1,5 +1,5 @@
 self.OFFLINE = {
-  "version": "de3b6823702790c4de7e",
+  "version": "e0dce54e4f7cb7593983",
   "files": [
     "accessibility.js",
     "advanced-tools.js",
@@ -7,6 +7,7 @@ self.OFFLINE = {
     "catalog.js",
     "directories.js",
     "favicon.ico",
+    "glyphs.js",
     "icons/activity.svg",
     "icons/arrow-up-right.svg",
     "icons/bell.svg",
@@ -48,11 +49,14 @@ self.OFFLINE = {
     "media/mitosis.webp",
     "media/tejido.webp",
     "modules.js",
+    "palette.js",
     "reference-browser.js",
-    "studio.css",
     "styles.css",
+    "theme-init.js",
     "vendor/chart.mjs",
     "vendor/fuse.mjs",
+    "vendor/instrument-serif-italic.woff2",
+    "vendor/instrument-serif.woff2",
     "vendor/manrope.woff2",
     "workspace.js"
   ]
