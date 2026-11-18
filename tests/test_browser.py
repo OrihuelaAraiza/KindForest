@@ -162,6 +162,7 @@ class AtlasTests(unittest.TestCase):
             page.get_by_role("button",name="Todo",exact=True).click()
             tools = page.locator(".tool-card")
             self.assertGreater(tools.count(), 20)
+            page.wait_for_function("Array.from(document.querySelectorAll('.tool-card img')).every(i => i.complete && i.naturalWidth > 0)")
             for item in tools.all():
                 item.click()
                 expect(page.locator("#panel")).to_be_visible()
