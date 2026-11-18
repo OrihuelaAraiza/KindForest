@@ -1,5 +1,5 @@
 self.OFFLINE = {
-  "version": "cf20c9dfab8bf756e15a",
+  "version": "de3b6823702790c4de7e",
   "files": [
     "accessibility.js",
     "advanced-tools.js",
