@@ -1,5 +1,5 @@
 self.OFFLINE = {
-  "version": "d3dc4cb8552dbd34b5db",
+  "version": "cf20c9dfab8bf756e15a",
   "files": [
     "accessibility.js",
     "advanced-tools.js",
@@ -35,6 +35,7 @@ self.OFFLINE = {
     "icons/pill.svg",
     "icons/scan-line.svg",
     "icons/search.svg",
+    "icons/shapes.svg",
     "icons/shield-check.svg",
     "icons/stethoscope.svg",
     "icons/timer.svg",
